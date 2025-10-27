@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -60,5 +61,34 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    // Role helpers
+    public function isDirector(): bool
+    {
+        return $this->role === 'director';
+    }
+
+    public function isManager(): bool
+    {
+        return in_array($this->role, ['director', 'manager']);
+    }
+
+    public function isEditor(): bool
+    {
+        return in_array($this->role, ['director', 'manager', 'editor']);
+    }
+
+    public function isSeoSpecialist(): bool
+    {
+        return in_array($this->role, ['director', 'manager', 'seo_specialist']);
+    }
+
+    /**
+     * Get the posts for the user.
+     */
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
     }
 }
